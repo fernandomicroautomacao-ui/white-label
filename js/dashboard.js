@@ -7,6 +7,7 @@ function renderizarAll() {
     renderizarMarketing();
     renderizarWhatsapp();
     renderizarCalendario();
+    if (typeof renderizarPessoas === 'function') renderizarPessoas();
     renderizarClientes();
     renderizarRelatorios();
     if (typeof renderizarRelatoriosAvancados === 'function') renderizarRelatoriosAvancados();

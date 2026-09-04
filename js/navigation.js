@@ -30,6 +30,7 @@ function navegarPara(section) {
         coletor: 'Coletor de Leads',
         calendario: 'Calendário',
         comunicacao: 'Comunicação',
+        pessoas: 'Pessoas & Contatos',
         clientes: 'Clientes',
         relatorios: 'Relatórios',
         financeiro: 'Financeiro e Comissões',
@@ -50,6 +51,7 @@ function navegarPara(section) {
     if (section === 'coletor') renderizarColetor();
     if (section === 'calendario') renderizarCalendario();
     if (section === 'comunicacao') renderizarComunicacao();
+    if (section === 'pessoas' && typeof renderizarPessoas === 'function') renderizarPessoas();
     if (section === 'clientes') renderizarClientes();
     if (section === 'relatorios') {
         renderizarRelatorios();

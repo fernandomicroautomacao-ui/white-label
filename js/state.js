@@ -12,6 +12,7 @@ let whatsappOptOut = [];
 let whatsappConsentimentos = {};
 let whatsappFilaAtual = null;
 let perdidos = [];
+let pessoas = []; // CRUD e mapeamento corporativo de pessoas/contatos por empresa
 let usuarios = [];
 let usuarioAtual = null;
 let currentDrag = null;

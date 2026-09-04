@@ -122,6 +122,7 @@ function atualizarContadores() {
     const pendentesColetor = coletorListas.reduce((acc, p) => acc + p.linhas.filter(l => l.tratado && !l.promovido).length, 0);
     setBadge('coletorCount', pendentesColetor);
     setBadge('perdidosCount', getPerdidosVisiveis().length);
+    setBadge('pessoasCount', (typeof getPessoasVisiveis === 'function') ? getPessoasVisiveis().length : (pessoas || []).length);
 
     const comBadge = document.getElementById('comunicacaoCount');
     if (comBadge) {

@@ -176,9 +176,13 @@ function abrirModalCliente(leadId) {
         </div>
 
         ${negociosHtml}
+        <div id="clienteModalPessoasContainer"></div>
     `;
 
     document.getElementById('clienteModalContent').innerHTML = html;
+    if (typeof renderizarPessoasNoModalCliente === 'function') {
+        renderizarPessoasNoModalCliente(principal.codigoUnico);
+    }
     abrirModal('clienteModal');
 }
 
