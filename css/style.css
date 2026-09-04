@@ -4492,3 +4492,34 @@ tr.tratado-row td {
 
 
 
+
+/* ============================================
+   INTELIGÊNCIA COMERCIAL V4
+   ============================================ */
+.eyebrow { display:block; color:var(--brand); font-size:10px; font-weight:800; letter-spacing:.12em; margin-bottom:5px; }
+.commercial-page-header { display:flex; justify-content:space-between; align-items:flex-end; gap:18px; margin-bottom:18px; }
+.commercial-page-header h2 { margin:0 0 4px; }
+.commercial-company-picker { min-width:260px; }
+.commercial-company-picker label, .commercial-category-form label, .commercial-profile-grid label { display:flex; flex-direction:column; gap:6px; color:var(--text-secondary); font-size:12px; font-weight:600; }
+.commercial-company-picker select, .commercial-category-form input, .commercial-category-form textarea, .commercial-profile-grid input, .commercial-profile-grid textarea { width:100%; border:1px solid var(--border-color); border-radius:var(--radius-sm); background:var(--bg-card); color:var(--text-primary); padding:9px 10px; font:inherit; font-size:13px; }
+.commercial-main-grid { display:grid; grid-template-columns:minmax(0,1.2fr) minmax(320px,.8fr); gap:18px; align-items:start; }
+.commercial-column { display:flex; flex-direction:column; gap:18px; min-width:0; }
+.commercial-card { background:var(--bg-card); border:1px solid var(--border-color); border-radius:var(--radius); box-shadow:var(--shadow); padding:18px; }
+.commercial-card-title, .commercial-rec-head, .category-admin-head, .commercial-profile-header { display:flex; justify-content:space-between; align-items:flex-start; gap:14px; }
+.commercial-card-title h2, .commercial-profile-header h3, .commercial-rec-head h3, .category-admin-head h3 { margin:0; }
+.commercial-info-badge, .commercial-code { color:var(--text-secondary); border:1px solid var(--border-color); border-radius:999px; padding:5px 8px; font-size:11px; white-space:nowrap; }
+.commercial-profile-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; margin-top:16px; }
+.commercial-field-wide { grid-column:1 / -1; }
+.commercial-actions { display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-top:14px; }
+.commercial-summary { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; padding:14px 0 6px; }
+.commercial-summary div { background:var(--bg-primary); border-radius:8px; padding:11px; }
+.commercial-summary strong { display:block; font-size:21px; margin-top:4px; }
+.commercial-recommendation { border-top:1px solid var(--border-color); padding:18px 0 4px; margin-top:14px; }
+.commercial-rec-head p, .category-admin-head p { color:var(--text-secondary); font-size:12px; margin:5px 0 0; }
+.commercial-score { text-align:right; min-width:70px; }.commercial-score strong { display:block; font-size:20px; }.commercial-score span { font-size:11px; font-weight:700; text-transform:uppercase; }
+.commercial-bar { height:5px; background:var(--bg-primary); border-radius:5px; overflow:hidden; margin:12px 0; }.commercial-bar span { display:block; height:100%; background:var(--success); border-radius:5px; }
+.commercial-rec-body { display:grid; grid-template-columns:1fr 1fr; gap:18px; }.commercial-rec-body h4 { font-size:12px; margin:8px 0 6px; }.commercial-tags { display:flex; flex-wrap:wrap; gap:5px; }.commercial-tag { background:var(--bg-primary); border:1px solid var(--border-color); border-radius:999px; padding:5px 8px; font-size:11px; }
+.commercial-reasons { padding-left:17px; margin:6px 0; color:var(--text-secondary); font-size:12px; line-height:1.5; }.commercial-rec-actions { display:flex; flex-wrap:wrap; gap:7px; margin-top:13px; }
+.commercial-category-form { display:grid; gap:11px; margin-top:14px; }.category-admin-card { padding:14px 0; border-top:1px solid var(--border-color); }.category-admin-card:first-child { border-top:0; }.category-meta { display:flex; flex-wrap:wrap; gap:8px; margin:11px 0; color:var(--text-muted); font-size:11px; }.category-meta span { background:var(--bg-primary); padding:4px 7px; border-radius:999px; }.category-tree details { border-left:2px solid var(--border-color); padding:6px 0 6px 10px; }.category-tree summary { cursor:pointer; font-size:12px; font-weight:700; }.category-tree-leaf { display:flex; flex-direction:column; gap:3px; padding:7px 0 0 10px; font-size:11px; color:var(--text-secondary); }.category-tree-leaf span { color:var(--text-muted); }
+@media (max-width: 1050px) { .commercial-main-grid { grid-template-columns:1fr; } .commercial-admin-column { display:grid; grid-template-columns:1fr 1fr; } }
+@media (max-width: 700px) { .commercial-page-header, .commercial-card-title, .commercial-rec-head, .category-admin-head { flex-direction:column; align-items:stretch; }.commercial-company-picker { min-width:0; }.commercial-profile-grid, .commercial-rec-body, .commercial-admin-column { grid-template-columns:1fr; }.commercial-summary { grid-template-columns:1fr; }.commercial-field-wide { grid-column:auto; } }

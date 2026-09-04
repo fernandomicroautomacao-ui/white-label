@@ -32,6 +32,7 @@ function navegarPara(section) {
         comunicacao: 'Comunicação',
         pessoas: 'Pessoas & Contatos',
         clientes: 'Clientes',
+        comercial: 'Inteligência Comercial',
         relatorios: 'Relatórios',
         financeiro: 'Financeiro e Comissões',
         historico: 'Histórico',
@@ -53,6 +54,7 @@ function navegarPara(section) {
     if (section === 'comunicacao') renderizarComunicacao();
     if (section === 'pessoas' && typeof renderizarPessoas === 'function') renderizarPessoas();
     if (section === 'clientes') renderizarClientes();
+    if (section === 'comercial' && typeof renderizarComercial === 'function') renderizarComercial();
     if (section === 'relatorios') {
         renderizarRelatorios();
         if (typeof renderizarRelatoriosAvancados === 'function') renderizarRelatoriosAvancados();

@@ -108,6 +108,10 @@
                 <span class="label">Clientes</span>
                 <span class="badge" id="clientCount">0</span>
             </a>
+            <a data-section="comercial">
+                <span class="icon" data-icone="marketing"></span>
+                <span class="label">Inteligência Comercial</span>
+            </a>
             <div class="nav-section-title">Gestão</div>
             <a data-section="relatorios">
                 <span class="icon" data-icone="relatorios"></span>
@@ -1295,6 +1299,38 @@
             </div>
         </section>
 
+        <!-- ============ INTELIGÊNCIA COMERCIAL V4 ============ -->
+        <section class="section" id="section-comercial">
+            <div class="commercial-page-header">
+                <div>
+                    <span class="eyebrow">COPILOTO COMERCIAL</span>
+                    <h2>Inteligência Comercial</h2>
+                    <p class="text-muted">Relacione o perfil de cada empresa às categorias e produtos com maior potencial.</p>
+                </div>
+                <div class="commercial-company-picker"><label for="comercialEmpresaSelect">Empresa analisada</label><select id="comercialEmpresaSelect" onchange="comercialSelecionarEmpresa(this.value)"></select></div>
+            </div>
+            <div class="commercial-main-grid">
+                <div class="commercial-column">
+                    <div class="commercial-card" id="comercialPerfilEmpresa"><div class="empty-state"><p>Selecione uma empresa para iniciar a análise.</p></div></div>
+                    <div class="commercial-card"><div class="commercial-card-title"><div><span class="eyebrow">RECOMENDAÇÕES</span><h2>Produtos e categorias com maior potencial</h2></div><span class="commercial-info-badge">Pontuação explicável</span></div><div id="comercialRecomendacoes"></div></div>
+                </div>
+                <div class="commercial-column commercial-admin-column">
+                    <div class="commercial-card"><div class="commercial-card-title"><div><span class="eyebrow">BASE DE PRODUTOS</span><h2 id="categoriaFormTitulo">Nova categoria</h2></div><button class="btn btn-outline btn-xs" type="button" onclick="limparFormCategoriaComercial()">Limpar</button></div>
+                        <form onsubmit="salvarCategoriaComercial(event)" class="commercial-category-form">
+                            <label>Categoria<input id="categoriaNome" required placeholder="Ex.: Automação Pneumática"></label>
+                            <label>Descrição<input id="categoriaDescricao" placeholder="Uso comercial da categoria"></label>
+                            <label>Clientes-alvo<input id="categoriaClientes" placeholder="Fabricantes de máquinas, Integradores"></label>
+                            <label>Segmentos relacionados<input id="categoriaSegmentos" placeholder="Embalagem, Envase, Automação"></label>
+                            <label>CNAEs relacionados<input id="categoriaCnaes" placeholder="Separe por vírgulas"></label>
+                            <label>Palavras-chave estratégicas<input id="categoriaPalavras" placeholder="máquina, sensor, montagem"></label>
+                            <label>Estrutura hierárquica <span class="text-xs text-muted">Uma linha por subcategoria: Subcategoria &gt; Subsubcategoria: Produto 1|Produto 2</span><textarea id="categoriaEstrutura" rows="5" placeholder="Atuadores Pneumáticos > Cilindros ISO: Cilindro ISO 15552|Cilindro compacto"></textarea></label>
+                            <button type="submit" class="btn btn-primary">Salvar categoria</button>
+                        </form>
+                    </div>
+                    <div class="commercial-card"><div class="commercial-card-title"><div><span class="eyebrow">CONFIGURAÇÃO</span><h2>Categorias cadastradas</h2></div></div><div id="comercialCategoriasLista"></div></div>
+                </div>
+            </div>
+        </section>
         <!-- ============ ADMINISTRAÇÃO ============ -->
         <section class="section" id="section-admin">
             <h3 class="admin-section-title">Identidade da Empresa</h3>
@@ -2433,6 +2469,7 @@
     <script src="js/email-outlook.js"></script>
     <script src="js/email-send.js"></script>
     <script src="js/marketing.js"></script>
+    <script src="js/comercial-inteligencia.js"></script>
     <script src="js/whatsapp.js"></script>
     <script src="js/coletor.js"></script>
     <script src="js/meudia.js"></script>
