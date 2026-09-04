@@ -224,3 +224,57 @@ drop policy if exists "company_settings_delete_owner" on public.company_settings
 create policy "company_settings_delete_owner"
   on public.company_settings for delete
   using (owner_id = auth.uid());
+
+-- ==============================================================================
+-- 7. TABELA DE PESSOAS / CONTATOS CORPORATIVOS MULTI-EMPRESA
+-- ==============================================================================
+create table if not exists public.pessoas (
+  id text primary key,
+  codigo_unico_pessoa text unique not null,
+  codigo_unico text not null,
+  empresa text not null,
+  nome text not null,
+  titulo text,
+  setor text,
+  email text,
+  whatsapp text,
+  telefone text,
+  decisor text default 'nao',
+  status text not null default 'ativo',
+  observacoes text,
+  usuario_id uuid references public.profiles(id),
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+create index if not exists idx_pessoas_codigo_unico on public.pessoas(codigo_unico);
+create index if not exists idx_pessoas_codigo_unico_pessoa on public.pessoas(codigo_unico_pessoa);
+create index if not exists idx_pessoas_empresa on public.pessoas(empresa);
+create index if not exists idx_pessoas_setor on public.pessoas(setor);
+create index if not exists idx_pessoas_titulo on public.pessoas(titulo);
+create index if not exists idx_pessoas_decisor on public.pessoas(decisor);
+create index if not exists idx_pessoas_usuario on public.pessoas(usuario_id);
+
+alter table public.pessoas enable row level security;
+
+drop policy if exists pessoas_select on public.pessoas;
+create policy pessoas_select on public.pessoas
+  for select to authenticated
+  using (true);
+
+drop policy if exists pessoas_insert on public.pessoas;
+create policy pessoas_insert on public.pessoas
+  for insert to authenticated
+  with check (true);
+
+drop policy if exists pessoas_update on public.pessoas;
+create policy pessoas_update on public.pessoas
+  for update to authenticated
+  using (true)
+  with check (true);
+
+drop policy if exists pessoas_delete on public.pessoas;
+create policy pessoas_delete on public.pessoas
+  for delete to authenticated
+  using (public.is_admin() or usuario_id = auth.uid() or usuario_id is null);
+

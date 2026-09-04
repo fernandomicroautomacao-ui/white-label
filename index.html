@@ -93,10 +93,15 @@
                 <span class="label">Calendário</span>
                 <span class="badge" id="calendarioCount">0</span>
             </a>
-            <a data-section="comunicacao">
+            <a data-section="comunicacao" class="nav-comunicacao-btn" id="navItemComunicacao" title="Central de Comunicação">
                 <span class="icon" data-icone="comunicacao"></span>
                 <span class="label">Comunicação</span>
                 <span class="badge" id="comunicacaoCount">0</span>
+            </a>
+            <a data-section="pessoas" id="navItemPessoas">
+                <span class="icon" data-icone="pessoas"></span>
+                <span class="label">Pessoas</span>
+                <span class="badge" id="pessoasCount">0</span>
             </a>
             <a data-section="clientes">
                 <span class="icon" data-icone="clientes"></span>
@@ -625,37 +630,203 @@
 
         <!-- ============ COMUNICAÇÃO ============ -->
         <section class="section" id="section-comunicacao">
-            <div class="flex flex-between flex-wrap gap-8 mb-16">
-                <h3 style="font-size:18px;font-weight:700;">Central de Comunicação</h3>
+            <div class="flex flex-between flex-wrap gap-12 mb-16" style="align-items:center;">
+                <div>
+                    <h3 style="font-size:18px;font-weight:700;margin:0 0 4px 0;">Central de Comunicação</h3>
+                    <p class="text-xs text-muted" style="margin:0;">Histórico unificado de interações, cadência de contatos e alertas de clientes desassistidos.</p>
+                </div>
+                <!-- Barra de Ações Rápidas em Estilo de Botão -->
                 <div class="flex gap-8 flex-wrap" style="align-items:center;">
-                    <select id="comFiltroVendedor" onchange="renderizarComunicacao()" style="display:none;padding:8px 14px;border:1px solid var(--border-color);border-radius:var(--radius-sm);background:var(--bg-card);color:var(--text-primary);">
-                        <option value="">Todos os vendedores</option>
-                    </select>
-                    <select id="comFiltroCanal" onchange="renderizarComunicacao()" style="padding:8px 14px;border:1px solid var(--border-color);border-radius:var(--radius-sm);background:var(--bg-card);color:var(--text-primary);">
-                        <option value="">Todos os canais</option>
+                    <button type="button" class="btn btn-primary" onclick="abrirModalRegistrarContatoRapido()" id="btnRegistrarContatoRapido">
+                        <span data-icone="nota"></span> + Registrar Contato
+                    </button>
+                    <button type="button" class="btn btn-secondary" onclick="navegarPara('marketing')" title="Ir para Disparo de E-mails">
+                        <span data-icone="marketing"></span> Novo E-mail
+                    </button>
+                    <button type="button" class="btn btn-secondary" onclick="navegarPara('whatsapp')" title="Ir para Central WhatsApp">
+                        <span data-icone="whatsapp"></span> Novo WhatsApp
+                    </button>
+                    <button type="button" class="btn btn-secondary" onclick="renderizarComunicacao()" title="Atualizar dados">
+                        <span data-icone="atualizar"></span> Atualizar
+                    </button>
+                </div>
+            </div>
+
+            <!-- Barra de Filtros com Estilo de Botões Segmentados -->
+            <div class="com-filtros-toolbar mb-16 p-12" style="background:var(--bg-card);border:1px solid var(--border-color);border-radius:var(--radius-sm);display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;">
+                <!-- Grupo de Botões: Canais -->
+                <div class="flex gap-8" style="align-items:center;flex-wrap:wrap;">
+                    <span class="text-xs text-muted" style="font-weight:600;text-transform:uppercase;letter-spacing:0.5px;">Canal:</span>
+                    <div class="btn-group-segmented" id="comBtnGroupCanal">
+                        <button type="button" class="btn-segmented active" data-canal="" onclick="setComFiltroCanal('')">Todos</button>
+                        <button type="button" class="btn-segmented" data-canal="email" onclick="setComFiltroCanal('email')"><span data-icone="marketing"></span> E-mail</button>
+                        <button type="button" class="btn-segmented" data-canal="whatsapp" onclick="setComFiltroCanal('whatsapp')"><span data-icone="whatsapp"></span> WhatsApp</button>
+                        <button type="button" class="btn-segmented" data-canal="ligacao" onclick="setComFiltroCanal('ligacao')"><span data-icone="telefone"></span> Ligações</button>
+                    </div>
+                    <select id="comFiltroCanal" style="display:none;" onchange="renderizarComunicacao()">
+                        <option value="" selected>Todos os canais</option>
                         <option value="email">E-mail</option>
                         <option value="whatsapp">WhatsApp</option>
+                        <option value="ligacao">Ligações</option>
                     </select>
-                    <select id="comFiltroPeriodo" onchange="renderizarComunicacao()" style="padding:8px 14px;border:1px solid var(--border-color);border-radius:var(--radius-sm);background:var(--bg-card);color:var(--text-primary);">
+                </div>
+
+                <!-- Grupo de Botões: Período -->
+                <div class="flex gap-8" style="align-items:center;flex-wrap:wrap;">
+                    <span class="text-xs text-muted" style="font-weight:600;text-transform:uppercase;letter-spacing:0.5px;">Período:</span>
+                    <div class="btn-group-segmented" id="comBtnGroupPeriodo">
+                        <button type="button" class="btn-segmented" data-periodo="7" onclick="setComFiltroPeriodo('7')">7 Dias</button>
+                        <button type="button" class="btn-segmented active" data-periodo="30" onclick="setComFiltroPeriodo('30')">30 Dias</button>
+                        <button type="button" class="btn-segmented" data-periodo="90" onclick="setComFiltroPeriodo('90')">90 Dias</button>
+                        <button type="button" class="btn-segmented" data-periodo="0" onclick="setComFiltroPeriodo('0')">Tudo</button>
+                    </div>
+                    <select id="comFiltroPeriodo" style="display:none;" onchange="renderizarComunicacao()">
                         <option value="7">Últimos 7 dias</option>
                         <option value="30" selected>Últimos 30 dias</option>
                         <option value="90">Últimos 90 dias</option>
                         <option value="0">Tudo</option>
                     </select>
                 </div>
+
+                <!-- Filtro Vendedor (admin) -->
+                <div id="comVendedorContainer" class="flex gap-8" style="align-items:center;">
+                    <select id="comFiltroVendedor" onchange="renderizarComunicacao()" style="display:none;padding:6px 12px;border:1px solid var(--border-color);border-radius:var(--radius-sm);background:var(--bg-card);color:var(--text-primary);font-size:13px;">
+                        <option value="">Todos os vendedores</option>
+                    </select>
+                </div>
             </div>
 
-            <div class="relatorio-resumo" id="comunicacaoResumoContainer"></div>
+            <!-- Botões de Sub-Visão da Central de Comunicação -->
+            <div class="flex gap-8 mb-16" style="border-bottom:1px solid var(--border-color);padding-bottom:10px;">
+                <button type="button" class="btn-com-toggle active" id="btnSubVisaoComTodas" onclick="alternarSubVisaoComunicacao('todas')">
+                    <span data-icone="relatorios"></span> Visão Geral & Métricas
+                </button>
+                <button type="button" class="btn-com-toggle" id="btnSubVisaoComAtrasados" onclick="alternarSubVisaoComunicacao('atrasados')">
+                    <span data-icone="lembrete"></span> Contatos Atrasados <span class="badge" id="badgeAtrasadosComBtn">0</span>
+                </button>
+                <button type="button" class="btn-com-toggle" id="btnSubVisaoComTimeline" onclick="alternarSubVisaoComunicacao('timeline')">
+                    <span data-icone="historico"></span> Linha do Tempo
+                </button>
+            </div>
 
-            <div class="relatorio-card mb-16">
-                <h3>Contatos Atrasados</h3>
-                <p class="text-xs text-muted mb-8">Clientes sem nenhum contato (ligação, e-mail ou WhatsApp) além do limite esperado pro potencial deles.</p>
+            <div class="relatorio-resumo mb-16" id="comunicacaoResumoContainer"></div>
+
+            <div class="relatorio-card mb-16" id="cardComunicacaoAtrasados">
+                <div class="flex flex-between flex-wrap gap-8 mb-8" style="align-items:center;">
+                    <h3 style="margin:0;">Contatos Atrasados (Cadência)</h3>
+                    <span class="text-xs text-muted">Clientes sem contato além do prazo do potencial (A: 7d, B: 15d, C: 30d)</span>
+                </div>
                 <div id="comunicacaoAtrasadosList"></div>
             </div>
 
-            <div class="relatorio-card">
-                <h3>Linha do Tempo</h3>
+            <div class="relatorio-card" id="cardComunicacaoTimeline">
+                <div class="flex flex-between flex-wrap gap-8 mb-8" style="align-items:center;">
+                    <h3 style="margin:0;">Linha do Tempo de Comunicações</h3>
+                    <span class="text-xs text-muted" id="timelineCountLabel">Exibindo interações</span>
+                </div>
                 <div id="comunicacaoTimelineList" class="historico-timeline"></div>
+            </div>
+        </section>
+
+        <!-- ============ PESSOAS & CONTATOS MULTI-EMPRESA ============ -->
+        <section class="section" id="section-pessoas">
+            <div class="flex flex-between flex-wrap gap-12 mb-16" style="align-items:center;">
+                <div>
+                    <h3 style="font-size:20px;font-weight:700;margin:0 0 4px 0;">Gestão e Relatório de Pessoas</h3>
+                    <p class="text-xs text-muted" style="margin:0;">Cadastro multi-contato por empresa (chave mestra), cargos/títulos, setores de atuação, canais diretos e tomadores de decisão.</p>
+                </div>
+                <div class="flex gap-8 flex-wrap" style="align-items:center;">
+                    <button type="button" class="btn btn-primary" onclick="abrirModalPessoa()" id="btnNovaPessoa">
+                        <span data-icone="pessoas"></span> + Nova Pessoa
+                    </button>
+                    <button type="button" class="btn btn-secondary" onclick="exportarPessoasCSV()" title="Exportar tabela para CSV / Excel">
+                        <span data-icone="exportar"></span> Exportar CSV
+                    </button>
+                    <button type="button" class="btn btn-secondary" onclick="imprimirRelatorioPessoas()" title="Imprimir relatório estruturado">
+                        <span data-icone="relatorios"></span> Imprimir Relatório
+                    </button>
+                    <button type="button" class="btn btn-secondary" onclick="limparFiltrosPessoas()" title="Limpar todos os filtros">
+                        <span data-icone="atualizar"></span> Limpar Filtros
+                    </button>
+                </div>
+            </div>
+
+            <!-- Resumo Analítico / KPIs de Pessoas -->
+            <div class="relatorio-resumo mb-16" id="pessoasResumoContainer">
+                <div class="resumo-item">
+                    <div class="valor" id="kpiPessoasTotal">0</div>
+                    <div class="label">Pessoas Cadastradas</div>
+                </div>
+                <div class="resumo-item">
+                    <div class="valor" id="kpiPessoasEmpresas">0</div>
+                    <div class="label">Empresas Mapeadas</div>
+                </div>
+                <div class="resumo-item">
+                    <div class="valor" id="kpiPessoasDecisores">0</div>
+                    <div class="label">Tomadores de Decisão</div>
+                </div>
+                <div class="resumo-item">
+                    <div class="valor" id="kpiPessoasSetores">0</div>
+                    <div class="label">Setores de Atuação</div>
+                </div>
+            </div>
+
+            <!-- Barra de Filtros e Busca do Relatório de Pessoas -->
+            <div class="filters mb-16 p-12" style="background:var(--bg-card);border:1px solid var(--border-color);border-radius:var(--radius-sm);display:flex;flex-wrap:wrap;gap:10px;align-items:center;">
+                <div style="flex:1 1 240px;min-width:200px;">
+                    <input type="text" id="pessoasSearchInput" placeholder="Buscar por pessoa, cargo, setor, empresa, código, email ou telefone..." oninput="renderizarPessoas()" style="width:100%;padding:8px 12px;border:1px solid var(--border-color);border-radius:var(--radius-sm);background:var(--bg-card);color:var(--text-primary);font-size:13px;">
+                </div>
+                <select id="pessoasFiltroEmpresa" onchange="renderizarPessoas()" style="padding:8px 12px;border:1px solid var(--border-color);border-radius:var(--radius-sm);background:var(--bg-card);color:var(--text-primary);font-size:13px;">
+                    <option value="">Todas as empresas</option>
+                </select>
+                <select id="pessoasFiltroSetor" onchange="renderizarPessoas()" style="padding:8px 12px;border:1px solid var(--border-color);border-radius:var(--radius-sm);background:var(--bg-card);color:var(--text-primary);font-size:13px;">
+                    <option value="">Todos os setores</option>
+                </select>
+                <select id="pessoasFiltroDecisor" onchange="renderizarPessoas()" style="padding:8px 12px;border:1px solid var(--border-color);border-radius:var(--radius-sm);background:var(--bg-card);color:var(--text-primary);font-size:13px;">
+                    <option value="">Papel de decisão</option>
+                    <option value="sim">Tomador de Decisão Final</option>
+                    <option value="influenciador">Influenciador Chave</option>
+                    <option value="tecnico">Avaliador Técnico</option>
+                    <option value="operacional">Operacional</option>
+                    <option value="nao">Não decisor</option>
+                </select>
+                <select id="pessoasFiltroPotencial" onchange="renderizarPessoas()" style="padding:8px 12px;border:1px solid var(--border-color);border-radius:var(--radius-sm);background:var(--bg-card);color:var(--text-primary);font-size:13px;">
+                    <option value="">Potencial da Empresa</option>
+                    <option value="A">Potencial A</option>
+                    <option value="B">Potencial B</option>
+                    <option value="C">Potencial C</option>
+                </select>
+                <select id="pessoasFiltroClassificacao" onchange="renderizarPessoas()" style="padding:8px 12px;border:1px solid var(--border-color);border-radius:var(--radius-sm);background:var(--bg-card);color:var(--text-primary);font-size:13px;">
+                    <option value="">Classificação da Empresa</option>
+                    <option value="consumidor">Consumidor</option>
+                    <option value="revendedor">Revendedor</option>
+                    <option value="industria">Indústria</option>
+                    <option value="distribuidor">Distribuidor</option>
+                    <option value="governo">Governo</option>
+                    <option value="outros">Outros</option>
+                </select>
+            </div>
+
+            <!-- Tabela Relatório de Pessoas -->
+            <div class="relatorio-card" style="padding:0;overflow:hidden;">
+                <div class="tabela-scroll" style="overflow-x:auto;">
+                    <table class="tabela-relatorio" style="width:100%;border-collapse:collapse;font-size:13px;">
+                        <thead>
+                            <tr style="background:var(--bg-sidebar);border-bottom:2px solid var(--border-color);text-align:left;">
+                                <th style="padding:12px 14px;font-weight:600;">Pessoa & Cód.</th>
+                                <th style="padding:12px 14px;font-weight:600;">Empresa (Chave Mestra)</th>
+                                <th style="padding:12px 14px;font-weight:600;">Título / Cargo</th>
+                                <th style="padding:12px 14px;font-weight:600;">Setor de Atuação</th>
+                                <th style="padding:12px 14px;font-weight:600;">Canais de Contato</th>
+                                <th style="padding:12px 14px;font-weight:600;">Papel Decisório</th>
+                                <th style="padding:12px 14px;font-weight:600;">Observações</th>
+                                <th style="padding:12px 14px;font-weight:600;text-align:center;">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="pessoasTabelaBody"></tbody>
+                    </table>
+                </div>
+                <div id="pessoasEmptyState" style="display:none;padding:40px 20px;text-align:center;"></div>
             </div>
         </section>
 
@@ -2072,6 +2243,176 @@
         </div>
     </div>
 
+    <!-- ============ MODAL PESSOA & CONTATO CORPORATIVO ============ -->
+    <div class="modal-overlay" id="pessoaModal">
+        <div class="modal modal-lg" style="max-width:700px;">
+            <div class="modal-header">
+                <h2 id="pessoaModalTitle">Nova Pessoa / Contato</h2>
+                <button type="button" class="modal-close" onclick="fecharModal('pessoaModal')">✕</button>
+            </div>
+            <form id="pessoaForm" onsubmit="salvarPessoaModal(event)">
+                <input type="hidden" id="pessoaId" value="">
+                
+                <div class="form-row">
+                    <div class="form-group flex-1">
+                        <label>Empresa Vinculada <span class="required">*</span></label>
+                        <select id="pessoaSelectEmpresa" onchange="onPessoaEmpresaSelecionada()" style="width:100%;padding:9px 12px;border:1px solid var(--border-color);border-radius:var(--radius-sm);background:var(--bg-card);color:var(--text-primary);" required>
+                            <option value="">Selecione a empresa...</option>
+                        </select>
+                        <input type="text" id="pessoaEmpresaCustom" placeholder="Ou digite o nome da empresa..." style="display:none;margin-top:6px;width:100%;">
+                    </div>
+                    <div class="form-group" style="width:220px;">
+                        <label>Chave Mestra da Empresa</label>
+                        <input type="text" id="pessoaCodigoUnico" placeholder="ex: 99.999.999/0001-11" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group flex-2">
+                        <label>Nome Completo da Pessoa <span class="required">*</span></label>
+                        <input type="text" id="pessoaNome" placeholder="Ex: Roberto Carlos Mendonça" required>
+                    </div>
+                    <div class="form-group flex-1">
+                        <label>Código Único (Chave Pessoa)</label>
+                        <input type="text" id="pessoaCodigoUnicoPessoa" placeholder="Ex: PES-0042" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group flex-1">
+                        <label>Título / Cargo Profissional <span class="required">*</span></label>
+                        <input type="text" id="pessoaTitulo" placeholder="Ex: Diretor de Suprimentos, Engenheiro de Manutenção" required>
+                    </div>
+                    <div class="form-group flex-1">
+                        <label>Setor / Departamento de Atuação <span class="required">*</span></label>
+                        <input type="text" id="pessoaSetor" list="listaSetoresSugeridos" placeholder="Ex: Compras, Manutenção, Engenharia" required>
+                        <datalist id="listaSetoresSugeridos">
+                            <option value="Compras / Suprimentos">
+                            <option value="Manutenção Industrial">
+                            <option value="Engenharia de Projetos">
+                            <option value="Produção / Chão de Fábrica">
+                            <option value="Diretoria / C-Level">
+                            <option value="Operações / Logística">
+                            <option value="Almoxarifado & Estoque">
+                            <option value="Financeiro / Controladoria">
+                            <option value="Tecnologia da Informação & Automação">
+                            <option value="Qualidade & Segurança">
+                        </datalist>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group flex-1">
+                        <label>WhatsApp / Celular</label>
+                        <input type="text" id="pessoaWhatsapp" placeholder="(11) 99999-9999">
+                    </div>
+                    <div class="form-group flex-1">
+                        <label>Telefone Comercial / Ramal</label>
+                        <input type="text" id="pessoaTelefone" placeholder="(11) 3456-7890 ramal 201">
+                    </div>
+                    <div class="form-group flex-1">
+                        <label>E-mail Corporativo</label>
+                        <input type="email" id="pessoaEmail" placeholder="contato@empresa.com.br">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group flex-1">
+                        <label>Papel na Tomada de Decisão</label>
+                        <select id="pessoaDecisor" style="width:100%;padding:9px 12px;border:1px solid var(--border-color);border-radius:var(--radius-sm);background:var(--bg-card);color:var(--text-primary);">
+                            <option value="sim">Tomador de Decisão Final</option>
+                            <option value="influenciador">Influenciador Chave</option>
+                            <option value="tecnico">Avaliador Técnico</option>
+                            <option value="operacional">Usuário Operacional</option>
+                            <option value="nao">Não decisor</option>
+                        </select>
+                    </div>
+                    <div class="form-group flex-1">
+                        <label>Status</label>
+                        <select id="pessoaStatus" style="width:100%;padding:9px 12px;border:1px solid var(--border-color);border-radius:var(--radius-sm);background:var(--bg-card);color:var(--text-primary);">
+                            <option value="ativo">Ativo na Empresa</option>
+                            <option value="inativo">Inativo / Desligado</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Observações do Setor de Atuação, Perfil e Negociações</label>
+                    <textarea id="pessoaObservacoes" rows="3" placeholder="Informações estratégicas: rotinas de compras do setor, preferências de atendimento, histórico pessoal, especificidades técnicas, etc."></textarea>
+                </div>
+
+                <div class="form-actions" style="margin-top:20px;display:flex;justify-content:flex-end;gap:10px;">
+                    <button type="button" class="btn btn-outline" onclick="fecharModal('pessoaModal')">Cancelar</button>
+                    <button type="submit" class="btn btn-primary"><span data-icone="salvar"></span> Salvar Pessoa</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ============ MODAL REGISTRAR CONTATO RÁPIDO (COMUNICAÇÃO) ============ -->
+    <div class="modal-overlay" id="modalRegistrarContatoRapido">
+        <div class="modal" style="max-width:560px;">
+            <div class="modal-header">
+                <h2>+ Registrar Contato / Interação</h2>
+                <button type="button" class="modal-close" onclick="fecharModal('modalRegistrarContatoRapido')">✕</button>
+            </div>
+            <form id="formRegistrarContatoRapido" onsubmit="salvarContatoRapido(event)">
+                <div class="form-group">
+                    <label>Empresa / Lead <span class="required">*</span></label>
+                    <select id="contatoRapidoLeadId" required style="width:100%;padding:9px 12px;border:1px solid var(--border-color);border-radius:var(--radius-sm);background:var(--bg-card);color:var(--text-primary);" onchange="aoSelecionarLeadContatoRapido()">
+                        <option value="">Selecione a empresa...</option>
+                    </select>
+                </div>
+                <div class="form-row">
+                    <div class="form-group flex-1">
+                        <label>Canal / Tipo de Contato <span class="required">*</span></label>
+                        <select id="contatoRapidoCanal" required style="width:100%;padding:9px 12px;border:1px solid var(--border-color);border-radius:var(--radius-sm);background:var(--bg-card);color:var(--text-primary);">
+                            <option value="Ligação">📞 Ligação Telefônica</option>
+                            <option value="WhatsApp">💬 Mensagem WhatsApp</option>
+                            <option value="Email">✉️ E-mail Comercial</option>
+                            <option value="Reunião">🤝 Reunião / Videoconferência</option>
+                            <option value="Visita">🏢 Visita Presencial</option>
+                        </select>
+                    </div>
+                    <div class="form-group flex-1">
+                        <label>Pessoa de Contato</label>
+                        <select id="contatoRapidoPessoaId" style="width:100%;padding:9px 12px;border:1px solid var(--border-color);border-radius:var(--radius-sm);background:var(--bg-card);color:var(--text-primary);">
+                            <option value="">Decisor principal / Geral</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group flex-1">
+                        <label>Data da Interação</label>
+                        <input type="date" id="contatoRapidoData" required>
+                    </div>
+                    <div class="form-group flex-1">
+                        <label>Hora</label>
+                        <input type="time" id="contatoRapidoHora" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Resumo / Descrição da Conversa <span class="required">*</span></label>
+                    <textarea id="contatoRapidoDescricao" rows="3" placeholder="Resumo do alinhamento, dúvidas tiradas, proposta discutida..." required></textarea>
+                </div>
+                <div class="form-row">
+                    <div class="form-group flex-1">
+                        <label>Próxima Ação Planejada</label>
+                        <input type="text" id="contatoRapidoProximaAcao" placeholder="Ex: Enviar orçamento com desconto">
+                    </div>
+                    <div class="form-group flex-1">
+                        <label>Data Próxima Ação</label>
+                        <input type="date" id="contatoRapidoProximaData">
+                    </div>
+                </div>
+                <div class="form-actions" style="margin-top:20px;display:flex;justify-content:flex-end;gap:10px;">
+                    <button type="button" class="btn btn-outline" onclick="fecharModal('modalRegistrarContatoRapido')">Cancelar</button>
+                    <button type="submit" class="btn btn-primary"><span data-icone="salvar"></span> Registrar Contato</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <div class="toast-container" id="toastContainer"></div>
 
     <!-- ============ SCRIPTS ============ -->
@@ -2101,6 +2442,7 @@
     <script src="js/perdidos.js"></script>
     <script src="js/calendar.js"></script>
     <script src="js/clientes.js"></script>
+    <script src="js/pessoas.js"></script>
     <script src="js/leads.js"></script>
     <script src="js/orcamento.js"></script>
     <script src="js/autorizacao-pedido.js"></script>

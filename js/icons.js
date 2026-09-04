@@ -9,6 +9,7 @@ const ICONES = {
     coletor: '<path d="M6 3v8a6 6 0 0 0 12 0V3"/><path d="M6 3h4"/><path d="M14 3h4"/><path d="M6 7h4"/><path d="M14 7h4"/>',
     calendario: '<rect x="3" y="4" width="18" height="17" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="9" x2="21" y2="9"/>',
     comunicacao: '<path d="M4 11a9 9 0 0 1 9 9"/><path d="M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1.4" fill="currentColor" stroke="none"/>',
+    pessoas: '<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>',
     clientes: '<circle cx="9" cy="8" r="3.2"/><path d="M3.3 20a5.7 5.7 0 0 1 11.4 0"/><circle cx="17.5" cy="9.5" r="2.4"/><path d="M15 14.3a4.6 4.6 0 0 1 6.2 4.3"/>',
     relatorios: '<polyline points="3 17 9 11 13 15 21 6"/><polyline points="15 6 21 6 21 12"/>',
     historico: '<circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15.5 14"/>',

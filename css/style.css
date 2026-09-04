@@ -4322,4 +4322,173 @@ tr.tratado-row td {
     border-top: 2px solid var(--border-color);
 }
 
+/* ==========================================================================
+   ESTILOS: ABA COMUNICAÇÃO (ESTILO DE BOTÃO) & GESTÃO DE PESSOAS
+   ========================================================================== */
+
+/* Estilo de Botão para Aba Comunicação no Menu */
+.sidebar nav a.nav-comunicacao-btn {
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    margin: 4px 10px;
+    background: rgba(47, 125, 91, 0.05);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+    transition: all 0.2s ease;
+    font-weight: 600;
+}
+.sidebar nav a.nav-comunicacao-btn:hover {
+    background: rgba(47, 125, 91, 0.12);
+    border-color: var(--primary-color);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(47, 125, 91, 0.1);
+}
+.sidebar nav a.nav-comunicacao-btn.active {
+    background: var(--primary-color) !important;
+    color: #ffffff !important;
+    border-color: var(--primary-color);
+    box-shadow: 0 2px 6px rgba(47, 125, 91, 0.25);
+}
+.sidebar nav a.nav-comunicacao-btn.active .icon,
+.sidebar nav a.nav-comunicacao-btn.active .label {
+    color: #ffffff !important;
+}
+
+/* Botões Segmentados Interativos */
+.btn-group-segmented {
+    display: inline-flex;
+    background: var(--bg-input, rgba(0, 0, 0, 0.04));
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    padding: 2px;
+    gap: 2px;
+}
+.btn-segmented {
+    background: transparent;
+    border: none;
+    padding: 6px 12px;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    border-radius: calc(var(--radius-sm) - 2px);
+    cursor: pointer;
+    transition: all 0.15s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    white-space: nowrap;
+}
+.btn-segmented:hover {
+    color: var(--text-primary);
+    background: rgba(0, 0, 0, 0.04);
+}
+.btn-segmented.active {
+    background: var(--primary-color);
+    color: #ffffff !important;
+    font-weight: 600;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+.btn-segmented.active svg {
+    stroke: #ffffff;
+}
+
+/* Sub-visão Comunicação Botões */
+.btn-com-toggle {
+    padding: 6px 14px;
+    font-size: 13px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    background: var(--bg-card);
+    color: var(--text-secondary);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.15s ease;
+}
+.btn-com-toggle:hover {
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+}
+.btn-com-toggle.active {
+    background: var(--primary-color);
+    color: #fff;
+    border-color: var(--primary-color);
+    font-weight: 600;
+}
+
+/* Tabela & Elementos de Pessoas */
+.pessoa-avatar {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 12px;
+    color: #ffffff;
+    text-transform: uppercase;
+    flex-shrink: 0;
+}
+.codigo-mestra-chip {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 11px;
+    padding: 2px 6px;
+    border-radius: 4px;
+    background: rgba(45, 72, 99, 0.08);
+    color: var(--text-secondary);
+    border: 1px solid var(--border-color);
+    display: inline-block;
+}
+.setor-badge {
+    display: inline-block;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+.setor-badge.compras { background: rgba(59, 130, 246, 0.12); color: #1d4ed8; }
+.setor-badge.manutencao { background: rgba(249, 115, 22, 0.12); color: #c2410c; }
+.setor-badge.engenharia { background: rgba(139, 92, 246, 0.12); color: #6d28d9; }
+.setor-badge.diretoria { background: rgba(16, 185, 129, 0.12); color: #047857; }
+.setor-badge.operacoes { background: rgba(20, 184, 166, 0.12); color: #0f766e; }
+.setor-badge.outros { background: rgba(100, 116, 139, 0.12); color: #475569; }
+
+.decisor-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+}
+.decisor-badge.sim { background: rgba(34, 197, 94, 0.15); color: #15803d; border: 1px solid rgba(34, 197, 94, 0.3); }
+.decisor-badge.influenciador { background: rgba(59, 130, 246, 0.15); color: #1d4ed8; border: 1px solid rgba(59, 130, 246, 0.3); }
+.decisor-badge.tecnico { background: rgba(168, 85, 247, 0.15); color: #7e22ce; border: 1px solid rgba(168, 85, 247, 0.3); }
+.decisor-badge.operacional { background: rgba(100, 116, 139, 0.12); color: #475569; border: 1px solid rgba(100, 116, 139, 0.2); }
+.decisor-badge.nao { background: rgba(148, 163, 184, 0.1); color: #64748b; }
+
+.btn-icon-canal {
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    transition: transform 0.15s ease, background 0.15s ease;
+    border: none;
+    cursor: pointer;
+}
+.btn-icon-canal.wa { background: #25d366; color: #ffffff; }
+.btn-icon-canal.wa:hover { background: #128c7e; transform: scale(1.08); }
+.btn-icon-canal.email { background: #2563eb; color: #ffffff; }
+.btn-icon-canal.email:hover { background: #1d4ed8; transform: scale(1.08); }
+.btn-icon-canal.tel { background: var(--bg-input, #e2e8f0); color: var(--text-primary); border: 1px solid var(--border-color); }
+.btn-icon-canal.tel:hover { background: #cbd5e1; transform: scale(1.08); }
+
+
 

@@ -86,6 +86,48 @@ function linhaSupabaseParaLead(r) {
     };
 }
 
+let pessoasIdsCarregados = new Set();
+
+function pessoaParaLinhaSupabase(p) {
+    return {
+        id: p.id,
+        codigo_unico_pessoa: p.codigoUnicoPessoa || p.id,
+        codigo_unico: p.codigoUnico || '',
+        empresa: p.empresa || '',
+        nome: p.nome || '',
+        titulo: p.titulo || '',
+        setor: p.setor || '',
+        email: p.email || '',
+        whatsapp: p.whatsapp || '',
+        telefone: p.telefone || '',
+        decisor: p.decisor || 'nao',
+        status: p.status || 'ativo',
+        observacoes: p.observacoes || '',
+        usuario_id: p.usuarioId || null,
+        created_at: p.dataCadastro || new Date().toISOString()
+    };
+}
+
+function linhaSupabaseParaPessoa(r) {
+    return {
+        id: r.id,
+        codigoUnicoPessoa: r.codigo_unico_pessoa || r.id,
+        codigoUnico: r.codigo_unico || '',
+        empresa: r.empresa || '',
+        nome: r.nome || '',
+        titulo: r.titulo || '',
+        setor: r.setor || '',
+        email: r.email || '',
+        whatsapp: r.whatsapp || '',
+        telefone: r.telefone || '',
+        decisor: r.decisor || 'nao',
+        status: r.status || 'ativo',
+        observacoes: r.observacoes || '',
+        usuarioId: r.usuario_id || null,
+        dataCadastro: r.created_at || new Date().toISOString()
+    };
+}
+
 async function carregarDados() {
     const saved = localStorage.getItem('ploomesLeadsV5');
     if (saved) {
@@ -187,6 +229,28 @@ async function carregarDados() {
     if (segmentosBusca.length === 0) {
         carregarSegmentosExemplo();
     }
+
+    // Carregar Pessoas (fallback localStorage + sincronização Supabase)
+    const savedPessoas = localStorage.getItem('ploomesPessoasV1');
+    if (savedPessoas) {
+        try {
+            pessoas = JSON.parse(savedPessoas);
+        } catch (e) {
+            pessoas = [];
+        }
+    }
+    try {
+        const { data: linhasPessoas, error: errPessoas } = await supabaseClient.from('pessoas').select('*');
+        if (!errPessoas && linhasPessoas && linhasPessoas.length > 0) {
+            pessoas = linhasPessoas.map(linhaSupabaseParaPessoa);
+        }
+    } catch (e) {
+        console.warn('Aviso ao carregar pessoas do Supabase:', e);
+    }
+    pessoasIdsCarregados = new Set((pessoas || []).map(p => p.id));
+    if (!pessoas || pessoas.length === 0) {
+        carregarExemplosPessoas();
+    }
 }
 
 async function salvarDados() {
@@ -206,6 +270,9 @@ async function salvarDados() {
         coletorListaAtivaId,
         segmentosBusca
     }));
+    try {
+        localStorage.setItem('ploomesPessoasV1', JSON.stringify(pessoas || []));
+    } catch (e) {}
     atualizarContadores();
 
     const idsAtuais = new Set(leads.map(l => l.id));
@@ -237,6 +304,25 @@ async function salvarDados() {
         if (error) {
             console.error('Erro ao excluir leads no Supabase:', error);
         }
+    }
+
+    // Sincronizar Pessoas com Supabase (com detecção graciosa de erros se tabela ainda não criada)
+    try {
+        if (pessoas && pessoas.length > 0) {
+            const linhasPessoas = pessoas.map(pessoaParaLinhaSupabase);
+            const { error: errPessoas } = await supabaseClient.from('pessoas').upsert(linhasPessoas, { onConflict: 'id' });
+            if (errPessoas) {
+                console.warn('Supabase pessoas upsert:', errPessoas.message);
+            }
+        }
+        const idsAtuaisPessoas = new Set((pessoas || []).map(p => p.id));
+        const idsPessoasParaExcluir = [...pessoasIdsCarregados].filter(id => !idsAtuaisPessoas.has(id));
+        pessoasIdsCarregados = idsAtuaisPessoas;
+        if (idsPessoasParaExcluir.length > 0) {
+            await supabaseClient.from('pessoas').delete().in('id', idsPessoasParaExcluir);
+        }
+    } catch (e) {
+        console.warn('Erro ao sincronizar pessoas com Supabase:', e);
     }
 }
 
@@ -431,8 +517,160 @@ function carregarExemplos() {
     }];
     leads = exemplos;
     carregarExemplosPerdidos();
+    carregarExemplosPessoas();
     salvarDados();
 }
+
+function carregarExemplosPessoas() {
+    const adminId = (typeof usuarios !== 'undefined' && usuarios.find(u => u.papel === 'admin')?.id) || (usuarios?.[0]?.id || 'admin');
+    const agora = Date.now();
+    const diaMs = 24 * 60 * 60 * 1000;
+
+    pessoas = [
+        {
+            id: 'pes-1001',
+            codigoUnicoPessoa: 'PES-0001',
+            codigoUnico: '99.999.999/0001-11',
+            empresa: 'Tech Solutions Ltda',
+            nome: 'Carlos Eduardo Silveira',
+            titulo: 'Diretor de Tecnologia & Inovação',
+            setor: 'Diretoria / C-Level',
+            email: 'carlos.silva@techsolutions.com',
+            whatsapp: '11988881111',
+            telefone: '(11) 99999-1111',
+            decisor: 'sim',
+            status: 'ativo',
+            observacoes: 'Tomador de decisão final de Capex e novos contratos de software e infraestrutura. Exige relatórios de ROI e cronograma de implantação detalhado.',
+            usuarioId: adminId,
+            dataCadastro: new Date(agora - 28 * diaMs).toISOString()
+        },
+        {
+            id: 'pes-1002',
+            codigoUnicoPessoa: 'PES-0002',
+            codigoUnico: '99.999.999/0001-11',
+            empresa: 'Tech Solutions Ltda',
+            nome: 'Mariana Duarte Prado',
+            titulo: 'Compradora Corporativa Sênior',
+            setor: 'Compras / Suprimentos',
+            email: 'mariana.compras@techsolutions.com',
+            whatsapp: '11976543210',
+            telefone: '(11) 3456-7890 (Ramal 204)',
+            decisor: 'influenciador',
+            status: 'ativo',
+            observacoes: 'Negocia prazos de pagamento, notas fiscais e homologação cadastral. Pede proposta formal em PDF timbrado.',
+            usuarioId: adminId,
+            dataCadastro: new Date(agora - 25 * diaMs).toISOString()
+        },
+        {
+            id: 'pes-1003',
+            codigoUnicoPessoa: 'PES-0003',
+            codigoUnico: '88.888.888/0002-22',
+            empresa: 'Distribuidora Norte',
+            nome: 'Mariana Santos',
+            titulo: 'Gerente Geral de Operações',
+            setor: 'Operações / Logística',
+            email: 'contato@distribuidoranorte.com',
+            whatsapp: '81988882222',
+            telefone: '(81) 99999-2222',
+            decisor: 'sim',
+            status: 'ativo',
+            observacoes: 'Lidera toda a operação de distribuição do Nordeste. Muito objetiva, prefere reuniões curtas via videoconferência.',
+            usuarioId: adminId,
+            dataCadastro: new Date(agora - 15 * diaMs).toISOString()
+        },
+        {
+            id: 'pes-1004',
+            codigoUnicoPessoa: 'PES-0004',
+            codigoUnico: '88.888.888/0002-22',
+            empresa: 'Distribuidora Norte',
+            nome: 'Ricardo Bezerra',
+            titulo: 'Coordenador de Almoxarifado e Frotas',
+            setor: 'Almoxarifado / Logística',
+            email: 'ricardo.bezerra@distribuidoranorte.com',
+            whatsapp: '81987112233',
+            telefone: '(81) 3224-5566 (Ramal 12)',
+            decisor: 'tecnico',
+            status: 'ativo',
+            observacoes: 'Acompanha a implantação na prática e valida os equipamentos e embalagens recebidas.',
+            usuarioId: adminId,
+            dataCadastro: new Date(agora - 12 * diaMs).toISOString()
+        },
+        {
+            id: 'pes-1005',
+            codigoUnicoPessoa: 'PES-0005',
+            codigoUnico: '77.777.777/0003-33',
+            empresa: 'Construtora Alpha',
+            nome: 'Roberto Almeida',
+            titulo: 'Diretor de Suprimentos & Engenharia Civil',
+            setor: 'Diretoria / Compras',
+            email: 'contato@construtoraalpha.com',
+            whatsapp: '31988883333',
+            telefone: '(31) 99999-3333',
+            decisor: 'sim',
+            status: 'ativo',
+            observacoes: 'Autoriza pedidos de grande porte. Exige conformidade técnica com normas ABNT e garantia estendida.',
+            usuarioId: adminId,
+            dataCadastro: new Date(agora - 40 * diaMs).toISOString()
+        },
+        {
+            id: 'pes-1006',
+            codigoUnicoPessoa: 'PES-0006',
+            codigoUnico: '77.777.777/0003-33',
+            empresa: 'Construtora Alpha',
+            nome: 'Eng. Fernando Guimarães',
+            titulo: 'Engenheiro Residente Chefe de Obras',
+            setor: 'Engenharia de Projetos',
+            email: 'eng.fernando@construtoraalpha.com',
+            whatsapp: '31991234567',
+            telefone: '(31) 3456-9900',
+            decisor: 'influenciador',
+            status: 'ativo',
+            observacoes: 'Especificador técnico dos materiais e dimensionamento de estruturas.',
+            usuarioId: adminId,
+            dataCadastro: new Date(agora - 35 * diaMs).toISOString()
+        },
+        {
+            id: 'pes-1007',
+            codigoUnicoPessoa: 'PES-0007',
+            codigoUnico: '66.666.666/0004-44',
+            empresa: 'Indústria Beta',
+            nome: 'Patrícia Lima',
+            titulo: 'Gerente de Manutenção Industrial',
+            setor: 'Manutenção Industrial',
+            email: 'contato@industriabeta.com',
+            whatsapp: '41988884444',
+            telefone: '(41) 99999-4444',
+            decisor: 'sim',
+            status: 'ativo',
+            observacoes: 'Foco em manutenção preditiva e disponibilidade das linhas de produção 24/7.',
+            usuarioId: adminId,
+            dataCadastro: new Date(agora - 20 * diaMs).toISOString()
+        },
+        {
+            id: 'pes-1008',
+            codigoUnicoPessoa: 'PES-0008',
+            codigoUnico: '55.555.555/0005-55',
+            empresa: 'Comércio Gama',
+            nome: 'Lucas Mendes',
+            titulo: 'Proprietário & Diretor Comercial',
+            setor: 'Diretoria / C-Level',
+            email: 'contato@comerciogama.com',
+            whatsapp: '51988885555',
+            telefone: '(51) 99999-5555',
+            decisor: 'sim',
+            status: 'ativo',
+            observacoes: 'Decisão rápida para entregas pontuais com pagamento facilitado.',
+            usuarioId: adminId,
+            dataCadastro: new Date(agora - 10 * diaMs).toISOString()
+        }
+    ];
+
+    try {
+        localStorage.setItem('ploomesPessoasV1', JSON.stringify(pessoas));
+    } catch (e) {}
+}
+
+window.carregarExemplosPessoas = carregarExemplosPessoas;
 
 function carregarExemplosPerdidos() {
     const adminId = (typeof usuarios !== 'undefined' && usuarios.find(u => u.papel === 'admin')?.id) || (usuarios?.[0]?.id || 'admin');
