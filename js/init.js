@@ -4,6 +4,7 @@
 document.addEventListener('DOMContentLoaded', async () => {
     aplicarTema();
     setupNavegacao();
+    if (typeof comercialCarregarDados === 'function') comercialCarregarDados();
 
     // Verificar tokens salvos
     verificarTokensSalvos();
